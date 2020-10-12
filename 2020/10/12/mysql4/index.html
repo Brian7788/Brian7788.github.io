@@ -4,7 +4,7 @@
 
 <head>
     <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
-    <meta name="keywords" content="MySQL基础(一）, 个人博客">
+    <meta name="keywords" content="MySQL基础(四), 个人博客">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>MySQL基础(一） | 个人博客</title>
+    <title>MySQL基础(四) | 个人博客</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -308,12 +308,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/15.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">MySQL基础(一）</h1>
+                    <h1 class="description center-align post-title">MySQL基础(四)</h1>
                 </div>
             </div>
         </div>
@@ -463,14 +463,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    473
+                    2.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    10 分
                 </div>
                 
 
@@ -485,77 +485,380 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="mysql常见命令"><a href="#mysql常见命令" class="headerlink" title="mysql常见命令"></a>mysql常见命令</h2><p><img src="/images/mysql-0.assets/wps1.jpg" alt="img"></p>
-<h2 id="基础查询"><a href="#基础查询" class="headerlink" title="基础查询"></a>基础查询</h2><pre class=" language-mysql"><code class="language-mysql">select 查询列表 from 表名;</code></pre>
+                <h2 id="常见约束"><a href="#常见约束" class="headerlink" title="常见约束"></a>常见约束</h2><h3 id="六大约束"><a href="#六大约束" class="headerlink" title="六大约束"></a>六大约束</h3><ol>
+<li>not null:非空，用于保证该字段的值不能为空，比如姓名学号等</li>
+<li>default：默认，用于保证该字段有默认值（性别）</li>
+<li>primary key：主键，用于保证该字段具有唯一性，并且非空，比如学号、员工编号等</li>
+<li>unique：唯一，用于保证字段具有唯一性，可以为空，比如座位号</li>
+<li>check：检查约束【mysql不支持】比如年龄性别</li>
+<li>foreign key：外键，用于限制两个表的关系，用于保证该字段的值必须来自于主表的关联词的值，在从表添加外键约束，用于引用主表中某列的值（比如学生表的专业编号，员工表的部门编号，员工表的工种）</li>
+</ol>
+<p>添加约束的时机：</p>
+<ol>
+<li>创建表时</li>
+<li>修改表时</li>
+</ol>
+<p>约束的添加分类：</p>
+<ol>
+<li><p>列级约束：</p>
+<p>六大约束语法上都支持，但外键约束没有效果</p>
+</li>
+<li><p>表级约束</p>
+<p>除了非空、默认，其他的都支持</p>
+</li>
+</ol>
+<p><img src="/images/mysql4.assets/image-20200921213542980.png"></p>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><h4 id="列级约束"><a href="#列级约束" class="headerlink" title="列级约束"></a>列级约束</h4><p>直接在字段名和类型后面追加约束类型即可</p>
+<p>只支持：默认、非空、主键、唯一</p>
+<pre class=" language-mysql"><code class="language-mysql">use students;
+create table stuinfo(
+    id int primary key,#主键
+      stuName varchar(20) not null,#非空
+    gender char(1) check(gender='男' or gender='女'),#检查(mysql中不可用)
+    seat int unique,#唯一
+    age int default 18,#默认约束
+    majorId int references major(id)#外键(mysql中不可用)
+
+)</code></pre>
+<h4 id="表级约束"><a href="#表级约束" class="headerlink" title="表级约束"></a>表级约束</h4><pre class=" language-mysql"><code class="language-mysql">在各个字段的最后面
+(constraint 约束名) 约束类型(字段名)</code></pre>
+<p><strong>前面括号内的东西可以不加，有默认的名字</strong></p>
+<h3 id="通用的写法"><a href="#通用的写法" class="headerlink" title="通用的写法"></a>通用的写法</h3><p><img src="/images/mysql4.assets/image-20200921220649506.png"></p>
+<h3 id="主键和唯一的区别"><a href="#主键和唯一的区别" class="headerlink" title="主键和唯一的区别"></a>主键和唯一的区别</h3><p><img src="/images/mysql4.assets/image-20200922193122766.png"></p>
+<p>是否允许组合的意思就是，只有所有内容全部一样才不能执行</p>
+<p>外键：</p>
+<ol>
+<li><p>要求从主表设置外键关系</p>
+</li>
+<li><p>从表的外键列的类型和主表的关联列的类型要求一致或兼容，名称无要求</p>
+</li>
+<li><p>主表的关联列必须是一个key（一般是主键或唯一）</p>
+</li>
+<li><p>插入数据时，先插入主表，再插入从表</p>
+<p>删除数据时，先删除从表，再删除从表</p>
+</li>
+</ol>
+<p>tip：加约束可以加多个（直接在后面加）</p>
+<h3 id="修改表时添加约束"><a href="#修改表时添加约束" class="headerlink" title="修改表时添加约束"></a>修改表时添加约束</h3><pre class=" language-mysql"><code class="language-mysql">1.添加列级约束
+alter table 表名 modify column 字段名 字段类型 新约束
+2.添加表级约束
+alter table 表名 add [constraint 约束名] 约束类型（字段名）[外键的引用]</code></pre>
+<h3 id="修改表时删除约束"><a href="#修改表时删除约束" class="headerlink" title="修改表时删除约束"></a>修改表时删除约束</h3><pre class=" language-mysql"><code class="language-mysql">1.删除非空约束
+alter table 表名 modify column 字段名 字段类型 (NULL);
+2.删除默认约束（同上）
+3.删除主键
+alter table 表名 drop primary key;
+4.删除唯一
+alter table 表名 drop unique;
+5.删除外键
+alter table 表名 drop foreign key 约束名;</code></pre>
+<p><img src="/images/mysql4.assets/image-20200922214433139.png"></p>
+<h2 id="标识列-自增长列"><a href="#标识列-自增长列" class="headerlink" title="标识列(自增长列)"></a>标识列(自增长列)</h2><pre class=" language-mysql"><code class="language-mysql">id int unique auto_increment</code></pre>
+<p>含义：可以不用手动插入值，系统提供默认的序列值</p>
 <p>特点：</p>
-<p>1、 查询列表可以是：表中的字段、常量值、表达式、函数</p>
-<p>2、查询的结果是一个虚拟的表格</p>
-<h3 id="mysql中-号与Java中的对比"><a href="#mysql中-号与Java中的对比" class="headerlink" title="mysql中+号与Java中的对比"></a>mysql中+号与Java中的对比</h3><p><img src="/images/mysql-0.assets/wps2.jpg" alt="img"></p>
-<h2 id="条件查询"><a href="#条件查询" class="headerlink" title="条件查询"></a>条件查询</h2><p><img src="/images/mysql-0.assets/wps5.jpg" alt="img"></p>
-<p><img src="/images/mysql-0.assets/wps6-1602330324265.jpg" alt="img"></p>
-<h3 id="模糊查询"><a href="#模糊查询" class="headerlink" title="模糊查询"></a>模糊查询</h3><p><img src="/images/mysql-0.assets/wps6-1602330343190.jpg" alt="img"></p>
-<h4 id="between-and的使用"><a href="#between-and的使用" class="headerlink" title="between and的使用"></a>between and的使用</h4><p><img src="/images/mysql-0.assets/wps7.jpg" alt="img"></p>
-<p>相当于大于等于100小于等于120</p>
-<h4 id="去重"><a href="#去重" class="headerlink" title="去重"></a>去重</h4><pre class=" language-mysql"><code class="language-mysql">select distinct 字段名 from 表名;</code></pre>
-<h4 id="、concat函数-和ifnull函数"><a href="#、concat函数-和ifnull函数" class="headerlink" title="+、concat函数 和ifnull函数"></a>+、concat函数 和ifnull函数</h4><p><img src="/images/mysql-0.assets/wps8.jpg" alt="img"></p>
-<h3 id="cancat函数"><a href="#cancat函数" class="headerlink" title="cancat函数"></a>cancat函数</h3><p>语法:</p>
-<pre class=" language-mysql"><code class="language-mysql">用于拼接字段
-concat('a','b','c')</code></pre>
-<p><img src="/images/mysql-0.assets/wps3.jpg" alt="img"></p>
-<h3 id="ifnull函数"><a href="#ifnull函数" class="headerlink" title="ifnull函数"></a>ifnull函数</h3><p>例：</p>
-<p>判断奖金是否为NULL，如为NULL，返回0</p>
-<p><img src="/images/mysql-0.assets/wps4.jpg" alt="img"></p>
-<h2 id="排序查询"><a href="#排序查询" class="headerlink" title="排序查询"></a>排序查询</h2><p><img src="/images/mysql-0.assets/wps9.jpg" alt="img"></p>
-<h2 id="补充：字符函数"><a href="#补充：字符函数" class="headerlink" title="补充：字符函数"></a><strong>补充</strong>：字符函数</h2><p>一般只有length是算字节数（汉字是三个字节）</p>
-<p>其他函数都是算长度（字符数）</p>
-<p><img src="/images/mysql-0.assets/wps10.jpg" alt="img"></p>
-<p><img src="/images/mysql-0.assets/wps11.jpg" alt="img"></p>
-<p><img src="/images/mysql-0.assets/wps12.jpg" alt="img"></p>
-<p>trim 去掉前后字符串</p>
-<p><img src="/images/mysql-0.assets/wps13.jpg" alt="img"></p>
-<h2 id="数字函数"><a href="#数字函数" class="headerlink" title="数字函数"></a>数字函数</h2><p><img src="/images/mysql-0.assets/wps14.jpg" alt="img"></p>
-<h2 id="日期函数"><a href="#日期函数" class="headerlink" title="日期函数"></a>日期函数</h2><pre class=" language-mysql"><code class="language-mysql">now 返回当前系统日期+时间
-cerdate 返回当前系统日期，不包含时间
-curtime 返回当前时间，不包含日期
-year()
-month()返回年月
-str_to_date('9-13-1999','%m-%d-%Y'):将日期格式的字符转换成指定格式的日期（转换符号见下表）
-data_format():将日期转换成字符</code></pre>
-<p><img src="/images/mysql-0.assets/image-20201010200316542.png" alt="image-20201010200316542"></p>
-<h2 id="流程控制函数——if、case"><a href="#流程控制函数——if、case" class="headerlink" title="流程控制函数——if、case"></a>流程控制函数——if、case</h2><p><img src="/images/mysql-0.assets/wps15.jpg" alt="img"></p>
-<p><img src="/images/mysql-0.assets/wps16.jpg" alt="img"></p>
-<p>（等于时成立）</p>
-<p><img src="/images/mysql-0.assets/wps17.jpg" alt="img"></p>
-<p>（范围内成立）</p>
-<h2 id="简单函数"><a href="#简单函数" class="headerlink" title="简单函数"></a>简单函数</h2><p><img src="/images/mysql-0.assets/wps18.jpg" alt="img"></p>
-<p><img src="/images/mysql-0.assets/wps19.jpg" alt="img"></p>
-<p><img src="/images/mysql-0.assets/wps20.jpg" alt="img"></p>
-<h2 id="分组查询"><a href="#分组查询" class="headerlink" title="分组查询"></a>分组查询</h2><p>语法：</p>
-<p><img src="/images/mysql-0.assets/wps21.jpg" alt="img"></p>
+<ol>
+<li>标识列可以和key搭配（主键，唯一，外键）</li>
+<li>一个表至多只能有一个标识列</li>
+<li>标识列的类型只能是数值型</li>
+<li>标识列可以通过set auto_increment_increment=3 设置步长；可以通过手动插入值，设置起始值。</li>
+</ol>
+<h2 id="事务的介绍（TCL语言：事务控制语言）"><a href="#事务的介绍（TCL语言：事务控制语言）" class="headerlink" title="事务的介绍（TCL语言：事务控制语言）"></a>事务的介绍（TCL语言：事务控制语言）</h2><p>事务的特性：</p>
+<p>ACID</p>
+<p><img src="/images/mysql4.assets/image-20200923143723423.png"></p>
+<p><img src="/images/mysql4.assets/image-20200923144732457.png"></p>
+<h2 id="事务的创建"><a href="#事务的创建" class="headerlink" title="事务的创建"></a>事务的创建</h2><p><img src="/images/mysql4.assets/image-20200923144756981.png"></p>
+<pre class=" language-mysql"><code class="language-mysql">步骤1： 开启事务
+set autocommit=0;
+start transaction;
+步骤2：编写事务中的sql语句（select insert update delete）
+语句1;
+语句2;
+...
+步骤3;结束事务
+commit;提交事务
+rollback;回滚事务
+savepoint 节点名;设置保存点</code></pre>
+<p>rollback回滚事务数据不会变化，只是存储在某一内存中</p>
+<p>commit是提交</p>
+<p>savepoint例子</p>
+<pre class=" language-mysql"><code class="language-mysql">set autocommit=0;
+start transaction;
+delete from account where id=25;
+savepoint a;#设置保存点
+delete from account where id=28;
+rollback to a;#回滚到保存点
+结果：id=25 变了，id=28不变</code></pre>
+<h2 id="事务并发问题的介绍（不是很理解）"><a href="#事务并发问题的介绍（不是很理解）" class="headerlink" title="事务并发问题的介绍（不是很理解）"></a>事务并发问题的介绍（不是很理解）</h2><p>数据库的隔离级别</p>
+<p><img src="/images/mysql4.assets/image-20200928104023382.png"></p>
+<p><img src="/images/mysql4.assets/image-20200928110954759.png"></p>
+<p><img src="/images/mysql4.assets/image-20200928111202065.png"></p>
+<p>总结：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>read uncommitted</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>read committed</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>repeatable read</td>
+<td>×</td>
+<td>×</td>
+<td>√</td>
+</tr>
+<tr>
+<td>serializable</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+</tr>
+</tbody></table>
+<p>mysql 中默认第三个隔离级别 repertable read</p>
+<p>oracle 中默认第二个隔离级别 read committed</p>
+<p>查看隔离级别</p>
+<p>select @@tx_isolation；</p>
+<p>设置隔离级别</p>
+<p>set session | global transaction iso</p>
+<p>lation level</p>
+<h2 id="视图"><a href="#视图" class="headerlink" title="视图"></a>视图</h2><h3 id="视图的介绍"><a href="#视图的介绍" class="headerlink" title="视图的介绍"></a>视图的介绍</h3><p>视图：一种虚拟存在的表，行和列的数据来自定义视图的查询中使用的表，并且是在使用视图时动态生成的，只保存sql逻辑，不保存查询结果</p>
+<p>应用场景：</p>
+<ol>
+<li>多个地方用到同样的查询结果</li>
+<li>该查询结果使用的sql语句较复杂</li>
+</ol>
+<p>示例：</p>
+<pre class=" language-mysql"><code class="language-mysql">create view my_v1
+as
+select studentname,majorname
+from student s
+inner join major m
+on s.majorid=m.majorid
+where s.majorid=1;</code></pre>
+<h3 id="视图的创建"><a href="#视图的创建" class="headerlink" title="视图的创建"></a>视图的创建</h3><p>语法：</p>
+<pre class=" language-mysql"><code class="language-mysql">create view 视图名
+as
+查询语句;</code></pre>
 <p>案例：</p>
-<p><img src="/images/mysql-0.assets/wps22.jpg" alt="img"></p>
-<p>复杂的分组查询案例（先写“的”前面，后面的用Having加（分组后筛选的内容））</p>
-<p><img src="/images/mysql-0.assets/wps23.jpg" alt="img"></p>
-<p>案例2：</p>
-<p><img src="/images/mysql-0.assets/wps24.jpg" alt="img"></p>
-<h2 id="连接查询——笛卡尔乘积"><a href="#连接查询——笛卡尔乘积" class="headerlink" title="连接查询——笛卡尔乘积"></a>连接查询——笛卡尔乘积</h2><p>笛卡尔乘积现象：表1有m行，表2有n行，合成表有（m*n）行</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> beauty<span class="token punctuation">;</span>
-<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> boys<span class="token punctuation">;</span>
-<span class="token keyword">select</span> name<span class="token punctuation">,</span> boyname <span class="token keyword">from</span> boy<span class="token punctuation">,</span>beauty
-<span class="token keyword">where</span> beauty<span class="token punctuation">.</span>boyfriend_id<span class="token operator">=</span>boy_id<span class="token punctuation">;</span></code></pre>
-<p>添加有效的连接条件</p>
-<h2 id="等值连接"><a href="#等值连接" class="headerlink" title="等值连接"></a>等值连接</h2><pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> job_title<span class="token punctuation">,</span><span class="token function">COUNT</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span>
-<span class="token keyword">FROM</span> employees <span class="token number">e</span><span class="token punctuation">,</span> jobs j
-<span class="token keyword">where</span> <span class="token number">e</span><span class="token punctuation">.</span>job_id<span class="token operator">=</span>j<span class="token punctuation">.</span>job_id
-<span class="token keyword">group</span> <span class="token keyword">by</span> job_title
-<span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token function">count</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token keyword">Desc</span><span class="token punctuation">;</span></code></pre>
-<p><img src="/images/mysql-0.assets/image-20200910213616908.png" alt="image-20200910213616908"></p>
-<h2 id="非等值连接"><a href="#非等值连接" class="headerlink" title="非等值连接"></a>非等值连接</h2><p><img src="/images/mysql-0.assets/image-20200910214509444.png" alt="image-20200910214509444"></p>
-<h2 id="自连接"><a href="#自连接" class="headerlink" title="自连接"></a>自连接</h2><p>在同一张表中需要在前面加上别名来区分查询的东西</p>
-<p><img src="/images/mysql-0.assets/image-20200910215411358.png" alt="image-20200910215411358"></p>
-<h2 id="外连接"><a href="#外连接" class="headerlink" title="外连接"></a>外连接</h2><p>应用场景：查询一个表中有另一个表中没有的记录</p>
-<p><img src="/images/mysql-0.assets/image-20200915200148813.png" alt="image-20200915200148813"></p>
-<p><img src="/images/mysql-0.assets/image-20200911114155418.png" alt="image-20200911114155418"></p>
+<pre class=" language-mysql"><code class="language-mysql">Q:查询各部门的平均公司级别
+#创建视图查看每个部门的平均工资
+create view myv2
+as
+select avg(salary) ag,department_id
+from employees
+group by department_id;
+#使用
+select myv2.ag,g.grade_level
+from myv2
+join job_grades g
+onmyv2.ag between g.lowest_sal and g.highest_sal;</code></pre>
+<p>好处：</p>
+<ol>
+<li>重用sql语句</li>
+<li>简化复杂的sql操作，不必知道它的查询细节</li>
+<li>保护数据，提高安全性</li>
+</ol>
+<h3 id="视图的修改"><a href="#视图的修改" class="headerlink" title="视图的修改"></a>视图的修改</h3><pre class=" language-mysql"><code class="language-mysql">方式1;
+create or replace view 视图名
+as
+查询语句;#修改没有内容就是创建;
+alter view myv3
+as
+查询语句;#修改</code></pre>
+<h3 id="视图的删除"><a href="#视图的删除" class="headerlink" title="视图的删除"></a>视图的删除</h3><pre class=" language-mysql"><code class="language-mysql">语法;
+drop view 视图名,视图名, ...</code></pre>
+<h3 id="查看视图"><a href="#查看视图" class="headerlink" title="查看视图"></a>查看视图</h3><pre class=" language-mysql"><code class="language-mysql">desc 视图名;
+show create view 视图名;</code></pre>
+<h3 id="视图的更新（基本不用）"><a href="#视图的更新（基本不用）" class="headerlink" title="视图的更新（基本不用）"></a>视图的更新（基本不用）</h3><p>也有增删改操作,和表的操作一样，可以改变表中的内容</p>
+<p><img src="/images/mysql4.assets/image-20200928205643068.png"></p>
+<h3 id="delete-和-truncate在事务使用时的区别"><a href="#delete-和-truncate在事务使用时的区别" class="headerlink" title="delete 和 truncate在事务使用时的区别"></a>delete 和 truncate在事务使用时的区别</h3><p>delete 可以回滚，truncate不可以回滚，直接执行删除</p>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>系统变量：</p>
+<ol>
+<li>全局变量</li>
+<li>会话变量</li>
+</ol>
+<p>自定义变量</p>
+<ol>
+<li>用户变量</li>
+<li>局部变量</li>
+</ol>
+<h3 id="系统变量"><a href="#系统变量" class="headerlink" title="系统变量"></a>系统变量</h3><p>使用的语法</p>
+<ol>
+<li><p>查看所有的系统变量</p>
+<pre class=" language-mysql"><code class="language-mysql">show global|session variables;</code></pre>
+</li>
+<li><p>查看满足条件的部分系统变量</p>
+<pre class=" language-mysql"><code class="language-mysql">show global|session variables like '%char%';</code></pre>
+</li>
+<li><p>查看指定的某个系统变量的值</p>
+<pre class=" language-mysql"><code class="language-mysql">select @@global|session.系统变量名</code></pre>
+</li>
+<li><p>为某个系统变量赋值</p>
+<pre class=" language-mysql"><code class="language-mysql">方式1：
+set global|session 系统变量名=值;
+方式2：
+set @@global|session.系统变量名=值;</code></pre>
+<p>注意：如果是全局级别，则需要加global，如果是会话级别，则需要加session，如果不写，则默认session。</p>
+<p>改变全局变量可以改变所有，但会话级别只有在当前会话中有效。</p>
+<p><strong>全局变量作用域</strong>：服务器每次启动将为所有的全局变量附初始值，针对所有的会话（连接）有效，但不能跨重启。</p>
+<p><strong>会话变量作用域</strong>：仅仅针对于当前会话（连接）有效。</p>
+</li>
+</ol>
+<h3 id="自定义变量"><a href="#自定义变量" class="headerlink" title="自定义变量"></a>自定义变量</h3><p><strong>用户变量的作用域</strong>：针对当前会话（连接）有效，同于会话变量的作用域。</p>
+<pre class=" language-mysql"><code class="language-mysql">1.声明并初始化(=或:=)
+set @用户变量名:=值;
+set @用户变量名=值;
+2.赋值
+set @用户变量名:=值;
+set @用户变量名=值;
+或者
+select 字段 into @变量名
+from 表;
+3.使用（查看用户变量的值）
+select @用户变量名;</code></pre>
+<h3 id="局部变量"><a href="#局部变量" class="headerlink" title="局部变量"></a>局部变量</h3><p><strong>局部变量作用域</strong>：仅仅在定义它的begin end中有效</p>
+<p>应用在begin end中的第一句话</p>
+<pre class=" language-mysql"><code class="language-mysql">1.声明并初始化(=或:=)
+declare 变量名 类型;
+declare 变量名 类型 default 值;
+2.赋值
+set 局部变量名:=值;
+set 局部变量名=值;
+或者
+select 字段 into 局部变量名
+from 表;
+3.使用
+select 局部变量名;</code></pre>
+<h2 id="存储过程和函数"><a href="#存储过程和函数" class="headerlink" title="存储过程和函数"></a>存储过程和函数</h2><p><img src="/images/mysql4.assets/image-20201006170428321.png"></p>
+<pre class=" language-mysql"><code class="language-mysql">一.创建语法
+create procedure 存储过程名（参数列表）
+begin
+    存储过程体（一组合法的sql语句）
+end
+注意：
+1.参数列表包含三部分
+参数模式 参数名 参数类型
+举例：
+in stuname varchar(20)
+参数模式：
+in：该参数可以作为输入，也就是该该参数需要调用方传入值
+out：该参数可以作为输出，也就是该参数可以作为返回值
+inout：该参数既可以作为输入又可以作为输出
+2.如果存储过程体仅仅只有一句话， begin end可以省略
+存储过程体中的每条sql语句的结尾必须要求加上分号
+存储过程的结尾可以使用 delimiter 重新设置
+语法：
+delimiter 结束标记
+案例：
+delimiter $
+二、调用函数
+call 存储过程名（实参列表）
+</code></pre>
+<h3 id="空参的存储过程"><a href="#空参的存储过程" class="headerlink" title="空参的存储过程"></a>空参的存储过程</h3><p><img src="/images/mysql4.assets/image-20201006191654905.png"></p>
+<h3 id="带in模式的存储过程"><a href="#带in模式的存储过程" class="headerlink" title="带in模式的存储过程"></a>带in模式的存储过程</h3><p>案例：创建存储过程实现，用户是否登录成功</p>
+<pre class=" language-mysql"><code class="language-mysql">create procedure myp4(in nsername varchar(20),in password varchar(20))
+begin
+    declare result int default 0;#声明初始化
+    select count(*) into result#赋值
+    from adman
+    where admin.username=username
+    andadmin.passward=password;#注意如果名字相同先考虑局部变量
+    select if(result>0,'成功'，'失败');#使用
+end $</code></pre>
+<h3 id="带out模式的存储过程"><a href="#带out模式的存储过程" class="headerlink" title="带out模式的存储过程"></a>带out模式的存储过程</h3><p>案例:根据女神名，返回对应的男神名和男神魅力值</p>
+<p><img src="/images/mysql4.assets/image-20201006194956767.png"></p>
+<h3 id="带inout模式的存储过程"><a href="#带inout模式的存储过程" class="headerlink" title="带inout模式的存储过程"></a>带inout模式的存储过程</h3><p>案例：传入a和b两个值，最终a和b都翻倍并返回</p>
+<pre class=" language-mysql"><code class="language-mysql">create procedure myp8(inout a int, inout b int)
+begin
+    set a=a*2;
+    set b=b*2;
+    end $
+#调用
+set @m=10$
+set @n=20$
+call myp8(@m,@n)$
+select @m,@n$</code></pre>
+<h3 id="删除存储过程"><a href="#删除存储过程" class="headerlink" title="删除存储过程"></a>删除存储过程</h3><p>语法：（一次只能删一个）</p>
+<pre class=" language-mysql"><code class="language-mysql">drop procedure 存储过程名</code></pre>
+<h3 id="查看存储过程的信息"><a href="#查看存储过程的信息" class="headerlink" title="查看存储过程的信息"></a>查看存储过程的信息</h3><p>语法：</p>
+<pre class=" language-MySQL"><code class="language-MySQL">show create procedure 存储过程名</code></pre>
+<p><img src="/images/mysql4.assets/image-20201007124755774.png"></p>
+<h2 id="函数的介绍"><a href="#函数的介绍" class="headerlink" title="函数的介绍"></a>函数的介绍</h2><p>函数：有且只有一个返回，适合做处理数据后返回一个结果</p>
+<pre class=" language-mysql"><code class="language-mysql">一：创建语法
+create function 函数名（参数列表） returns 返回类型
+begin
+    函数体
+end
+注意：
+参数列表包含两部分
+参数名 参数类型
+函数体：肯定会有 return 语句，没有也不报错
+使用 delimiter 语句设置结束标记
+二：调用语法
+select 函数名（参数列表）</code></pre>
+<p><img src="/images/mysql4.assets/image-20201007131057023.png"></p>
+<h3 id="查看函数"><a href="#查看函数" class="headerlink" title="查看函数"></a>查看函数</h3><pre class=" language-mysql"><code class="language-mysql">show create function 函数名</code></pre>
+<h3 id="删除函数"><a href="#删除函数" class="headerlink" title="删除函数"></a>删除函数</h3><pre class=" language-mysql"><code class="language-mysql">drop function 函数名</code></pre>
+<h2 id="分支结构——if结构"><a href="#分支结构——if结构" class="headerlink" title="分支结构——if结构"></a>分支结构——if结构</h2><p>功能：实现多重分支</p>
+<pre class=" language-mysql"><code class="language-mysql">if 条件1 then 语句1;
+elseif 条件2 then 语句2;
+...
+end if;
+应用在 begin end 中</code></pre>
+<h2 id="循环结构的介绍"><a href="#循环结构的介绍" class="headerlink" title="循环结构的介绍"></a>循环结构的介绍</h2><p>循环结构</p>
+<p>分类：</p>
+<p>while、loop、repeat</p>
+<p>循环控制:</p>
+<p>iterate类似 continue，继续，结束本次循环，继续下一次</p>
+<p>leave 类似于break，跳出，结束当前循环</p>
+<p><strong>如果要加入循环控制，需要给循环加上名字（标签）</strong></p>
+<ol>
+<li>while</li>
+</ol>
+<pre class=" language-mysql"><code class="language-mysql">&#123;标签：&#125; while 循环条件 do
+        循环体;
+end while &#123;标签&#125;;</code></pre>
+<ol start="2">
+<li>loop(模拟简单的死循环)</li>
+</ol>
+<pre class=" language-mysql"><code class="language-mysql">&#123;标签：&#125; loop do
+        循环体;
+end loop &#123;标签&#125;;</code></pre>
+<ol start="3">
+<li>repeat</li>
+</ol>
+<pre class=" language-mysql"><code class="language-mysql">&#123;标签：&#125; repeat
+        循环体;
+until 结束循环的条件
+end repeat &#123;标签&#125;;</code></pre>
+<p>案例：</p>
+<pre class=" language-mysql"><code class="language-mysql">批量插入，根据次数插入到admin表中多条记录，如果次数大于20则停止
+create procedure test_while1(in insertCount int)
+begin
+    declare i int default 1;
+    a: while i<insertCount do
+    insert into admin(username,password) values (concat('xiaohua',i),'0000');
+    if i>=20 then leave a;
+    end if;
+    set i=i+1;
+    end while a;
+end $</code></pre>
+<p>案例：批量插入，根据次数插入到admin表中多条记录，只插入偶数次</p>
+<p><img src="/images/mysql4.assets/image-20201008094828193.png"></p>
+<p><img src="/images/mysql4.assets/image-20201008095918316.png"></p>
 
             </div>
             <hr/>
@@ -581,7 +884,7 @@ data_format():将日期转换成字符</code></pre>
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://Brian7788.github.io/2020/10/12/mysql-0/">https://Brian7788.github.io/2020/10/12/mysql-0/</a>
+                    <a href="https://Brian7788.github.io/2020/10/12/mysql4/">https://Brian7788.github.io/2020/10/12/mysql4/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -788,9 +1091,10 @@ data_format():将日期转换成字符</code></pre>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/10/12/mysql4/">
                     <div class="card-image">
@@ -808,9 +1112,9 @@ data_format():将日期转换成字符</code></pre>
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-10-12
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-10-12
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -819,6 +1123,7 @@ data_format():将日期转换成字符</code></pre>
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -837,13 +1142,13 @@ data_format():将日期转换成字符</code></pre>
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/09/21/MySQL2/">
+                <a href="/2020/10/12/mysql-0/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="MySQL基础(三)">
+                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="MySQL基础(一）">
                         
-                        <span class="card-title">MySQL基础(三)</span>
+                        <span class="card-title">MySQL基础(一）</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -854,7 +1159,7 @@ data_format():将日期转换成字符</code></pre>
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-09-21
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-10-12
                             </span>
                         <span class="publish-author">
                             
